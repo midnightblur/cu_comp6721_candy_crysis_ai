@@ -1,6 +1,9 @@
 package model;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.TreeMap;
 
 import static model.Config.*;
@@ -26,8 +29,6 @@ public class GamePlay {
             }
             gameState.put(cellChar, input.get(i));
         }
-        drawGameState();
-        System.out.println(isGoalState());
     }
     
     /**
@@ -35,6 +36,7 @@ public class GamePlay {
      * Validate all the candy character based on the game rules
      *
      * @param inputString the input string
+     *
      * @return the array of candy characters from the input string
      */
     private ArrayList<Character> readInitialState(String inputString) {
@@ -67,21 +69,34 @@ public class GamePlay {
     /**
      * Draw the state of the board to console
      */
-    private void drawGameState() {
-        StringBuilder toDisplayString = new StringBuilder();
-        int columnCount = 0;
-        for (Character candy : gameState.values()) {
-            if (columnCount == 5) {
-                toDisplayString.append(System.lineSeparator());
-                columnCount = 0;
-            }
-            if (candy == 'e') {
-                candy = ' ';
-            }
-            toDisplayString.append(Character.toString(candy)).append(" ");
-            columnCount++;
-        }
-        System.out.println(toDisplayString);
+    public void drawGameState() {
+        System.out.println();
+        String printFormat = "=====================" + System.lineSeparator() +
+                        "|   |   |   |   |   |" + System.lineSeparator() +
+                        "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
+                        "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
+                        "|   |   |   |   |   |" + System.lineSeparator() +
+                        "===================" + System.lineSeparator() +
+                        "|   |   |   |   |   |" + System.lineSeparator() +
+                        "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
+                        "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
+                        "|   |   |   |   |   |" + System.lineSeparator() +
+                        "===================" + System.lineSeparator() +
+                        "|   |   |   |   |   |" + System.lineSeparator() +
+                        "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
+                        "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
+                        "|   |   |   |   |   |" + System.lineSeparator() +
+                        "=====================" + System.lineSeparator();
+        ArrayList<Character> cellChars = new ArrayList<>(gameState.keySet());
+        ArrayList<Character> candyChars = new ArrayList<>(gameState.values());
+        System.out.printf(printFormat,
+                cellChars.get(0), cellChars.get(1), cellChars.get(2), cellChars.get(3), cellChars.get(4),
+                candyChars.get(0), candyChars.get(1), candyChars.get(2), candyChars.get(3), candyChars.get(4),
+                cellChars.get(5), cellChars.get(6), cellChars.get(7), cellChars.get(8), cellChars.get(9),
+                candyChars.get(5), candyChars.get(6), candyChars.get(7), candyChars.get(8), candyChars.get(9),
+                cellChars.get(10), cellChars.get(11), cellChars.get(12), cellChars.get(13), cellChars.get(14),
+                candyChars.get(10), candyChars.get(11), candyChars.get(12), candyChars.get(13), candyChars.get(14)
+        );
     }
     
     /**
@@ -103,6 +118,9 @@ public class GamePlay {
         if (GAME_RULES.isValidMove(cellChar, emptyCellChar)) {
             gameState.put(emptyCellChar, gameState.get(cellChar));
             gameState.put(cellChar, GAME_RULES.CANDY.e.getChar());
+            emptyCellChar = cellChar;
+        } else {
+            System.out.println("");
         }
     }
     
@@ -113,8 +131,8 @@ public class GamePlay {
      */
     public boolean isGoalState() {
         for (int i = 0; i < 5; i++) {
-            char topCellChar = (char)(i + 65);
-            char bottomCellChar = (char)(i + 65 + GAME_RULES.GOAL_STATE_MATCHING_CELL_DISTANCE);
+            char topCellChar = (char) (i + 65);
+            char bottomCellChar = (char) (i + 65 + GAME_RULES.GOAL_STATE_MATCHING_CELL_DISTANCE);
             if (gameState.get(topCellChar) != gameState.get(bottomCellChar)) {
                 return false;
             }

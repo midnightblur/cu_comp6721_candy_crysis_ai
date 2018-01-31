@@ -17,6 +17,7 @@ public class Config {
         public static final String INVALID_CELLS = "Cells letter range from A to O";
         public static final String INVALID_INDEX = "Cells index range from 0 to 14";
         public static final String INVALID_CANDY = "Invalid candy letter";
+        public static final String INVALID_MOVE = "Invalid move";
         public static final int GOAL_STATE_MATCHING_CELL_DISTANCE = 10;
         
         public static char getCellCharByIndex(int cellIndex) {
@@ -28,12 +29,10 @@ public class Config {
         }
         
         public static int getCellIndexByChar(char cellChar) {
-            cellChar = Character.toUpperCase(cellChar);
-            int cellIndex = (int) cellChar - 65;
-            if (cellIndex < 0 || cellIndex > 14) {
+            if (!isValidCellChar(cellChar)) {
                 throw new IllegalArgumentException(INVALID_CELLS);
             }
-            return cellIndex;
+            return (int) cellChar - 65;
         }
         
         public static ArrayList<Character> getCellsMovableTo(char cellChar) {
@@ -107,8 +106,22 @@ public class Config {
         }
         
         public static boolean isValidMove(char movedCell, char emptyCell) {
-            ArrayList<Character> movableCells = getCellsMovableTo(emptyCell);
-            return (movableCells.contains(movedCell));
+            if (isValidCellChar(movedCell) && isValidCellChar(emptyCell)) {
+                ArrayList<Character> movableCells = getCellsMovableTo(emptyCell);
+                if (movableCells.contains(movedCell)) {
+                    return true;
+                } else {
+                    System.out.println(INVALID_MOVE);
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        
+        public static boolean isValidCellChar(char cellChar) {
+            cellChar = Character.toUpperCase(cellChar);
+            return (cellChar >= 65 && cellChar <= 79);
         }
     }
 }
