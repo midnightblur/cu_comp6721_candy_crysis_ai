@@ -2,13 +2,24 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.TreeMap;
 
 public class Config {
-    public static class BOARD_CONFIG {
-        private static final String INVALID_CELLS = "Cells letter range from A to O";
-        private static final String INVALID_INDEX = "Cells index range from 0 to 14";
+    public static class GAME_RULES {
+        public enum CANDY {
+            e('e'), r('r'), b('b'), w('w'), y('y'), g('g'), p('p');
+            
+            private char representedChar;
+            CANDY(char representedChar) {this.representedChar = representedChar;}
+            public char getChar() {return this.representedChar;}
+        }
         
-        public char getCellCharByIndex(int cellIndex) {
+        public static final String INVALID_CELLS = "Cells letter range from A to O";
+        public static final String INVALID_INDEX = "Cells index range from 0 to 14";
+        public static final String INVALID_CANDY = "Invalid candy letter";
+        public static final int GOAL_STATE_MATCHING_CELL_DISTANCE = 10;
+        
+        public static char getCellCharByIndex(int cellIndex) {
             if (cellIndex < 0 || cellIndex > 14) {
                 throw new IllegalArgumentException(INVALID_INDEX);
             }
@@ -16,7 +27,7 @@ public class Config {
             return (char) (cellIndex + 65);
         }
         
-        public int getCellIndexByChar(char cellChar) {
+        public static int getCellIndexByChar(char cellChar) {
             cellChar = Character.toUpperCase(cellChar);
             int cellIndex = (int) cellChar - 65;
             if (cellIndex < 0 || cellIndex > 14) {
@@ -25,7 +36,7 @@ public class Config {
             return cellIndex;
         }
         
-        public ArrayList<Character> getCellsMovableTo(char cellChar) {
+        public static ArrayList<Character> getCellsMovableTo(char cellChar) {
             cellChar = Character.toUpperCase(cellChar);
             Character cells[];
             switch (cellChar) {
@@ -80,9 +91,24 @@ public class Config {
             return new ArrayList<>(Arrays.asList(cells));
         }
     
-        public ArrayList<Character> getCellsMovableTo(int cellIndex) {
+        public static ArrayList<Character> getCellsMovableTo(int cellIndex) {
             char cellChar = getCellCharByIndex(cellIndex);
             return getCellsMovableTo(cellChar);
+        }
+        
+        public static boolean isValidCandyChar(char candyChar) {
+            CANDY candies[] = CANDY.values();
+            for (CANDY candy : candies) {
+                if (candyChar == candy.getChar()) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        public static boolean isValidMove(char movedCell, char emptyCell) {
+            ArrayList<Character> movableCells = getCellsMovableTo(emptyCell);
+            return (movableCells.contains(movedCell));
         }
     }
 }
