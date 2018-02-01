@@ -25,6 +25,10 @@ public class Driver {
             gamePlay.drawGameState();
             char cellToMove = getPlayerInstruction();
             gamePlay.moveCandy(cellToMove);
+            if (gamePlay.isGoalState()) {
+                System.out.println("You win!!!!");
+                break;
+            }
         }
     }
     

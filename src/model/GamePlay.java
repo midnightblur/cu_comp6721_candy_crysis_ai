@@ -21,6 +21,7 @@ public class GamePlay {
         stepsTaken = new ArrayList<>();
         emptyCellChar = Character.MIN_VALUE;
         
+        // Initialize the initial state
         ArrayList<Character> input = readInitialState(inputString);
         for (int i = 0; i < input.size(); i++) {
             char cellChar = GAME_RULES.getCellCharByIndex(i);
@@ -30,6 +31,7 @@ public class GamePlay {
             gameState.put(cellChar, input.get(i));
         }
         
+        // Display empty cell instead of character 'e'
         for (Map.Entry entry : gameState.entrySet()) {
             if ((char) entry.getValue() == GAME_RULES.CANDY.e.getChar()) {
                 entry.setValue(' ');
