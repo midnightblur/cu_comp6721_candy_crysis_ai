@@ -106,6 +106,7 @@ public class Config {
         }
         
         public static boolean isValidMove(char movedCell, char emptyCell) {
+            movedCell = Character.toUpperCase(movedCell);
             if (isValidCellChar(movedCell) && isValidCellChar(emptyCell)) {
                 ArrayList<Character> movableCells = getCellsMovableTo(emptyCell);
                 if (movableCells.contains(movedCell)) {

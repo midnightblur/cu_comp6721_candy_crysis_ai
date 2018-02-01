@@ -28,7 +28,8 @@ public class Driver {
         }
     }
     
-    private static void aiMode() {}
+    private static void aiMode() {
+    }
     
     /**
      * Let user choose the play mode
@@ -38,7 +39,7 @@ public class Driver {
     private static int getPlayMode() {
         while (true) {
             displayMainMenu();
-    
+            
             Scanner scanner = new Scanner(System.in);
             int input;
             try {
@@ -46,7 +47,8 @@ public class Driver {
                 if (input == 1 || input == 2) {
                     return input;
                 }
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
         }
     }
     
@@ -67,10 +69,7 @@ public class Driver {
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
             if (input.length() == 1) {
-                char charInput = input.charAt(0);
-                if (Config.GAME_RULES.isValidCellChar(charInput)) {
-                    return charInput;
-                }
+                return input.charAt(0);
             }
         }
     }

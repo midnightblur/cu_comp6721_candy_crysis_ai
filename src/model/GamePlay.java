@@ -1,8 +1,6 @@
 package model;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -10,6 +8,7 @@ import static model.Config.*;
 
 public class GamePlay {
     private TreeMap<Character, Character> gameState;
+    private ArrayList<Character> stepsTaken;
     private char emptyCellChar;
     
     /**
@@ -19,6 +18,7 @@ public class GamePlay {
      */
     public GamePlay(String inputString) {
         gameState = new TreeMap<>();
+        stepsTaken = new ArrayList<>();
         emptyCellChar = Character.MIN_VALUE;
         
         ArrayList<Character> input = readInitialState(inputString);
@@ -28,6 +28,13 @@ public class GamePlay {
                 emptyCellChar = cellChar;
             }
             gameState.put(cellChar, input.get(i));
+        }
+        
+        for (Map.Entry entry : gameState.entrySet()) {
+            if ((char) entry.getValue() == GAME_RULES.CANDY.e.getChar()) {
+                entry.setValue(' ');
+                break;
+            }
         }
     }
     
@@ -72,20 +79,20 @@ public class GamePlay {
     public void drawGameState() {
         System.out.println();
         String printFormat = "=====================" + System.lineSeparator() +
-                        "|   |   |   |   |   |" + System.lineSeparator() +
+//                        "|   |   |   |   |   |" + System.lineSeparator() +
                         "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
                         "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
-                        "|   |   |   |   |   |" + System.lineSeparator() +
-                        "===================" + System.lineSeparator() +
-                        "|   |   |   |   |   |" + System.lineSeparator() +
+//                        "|   |   |   |   |   |" + System.lineSeparator() +
+                        "=====================" + System.lineSeparator() +
+//                        "|   |   |   |   |   |" + System.lineSeparator() +
                         "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
                         "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
-                        "|   |   |   |   |   |" + System.lineSeparator() +
-                        "===================" + System.lineSeparator() +
-                        "|   |   |   |   |   |" + System.lineSeparator() +
+//                        "|   |   |   |   |   |" + System.lineSeparator() +
+                        "=====================" + System.lineSeparator() +
+//                        "|   |   |   |   |   |" + System.lineSeparator() +
                         "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
                         "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
-                        "|   |   |   |   |   |" + System.lineSeparator() +
+//                        "|   |   |   |   |   |" + System.lineSeparator() +
                         "=====================" + System.lineSeparator();
         ArrayList<Character> cellChars = new ArrayList<>(gameState.keySet());
         ArrayList<Character> candyChars = new ArrayList<>(gameState.values());
@@ -117,8 +124,10 @@ public class GamePlay {
     public void moveCandy(char cellChar) {
         if (GAME_RULES.isValidMove(cellChar, emptyCellChar)) {
             gameState.put(emptyCellChar, gameState.get(cellChar));
-            gameState.put(cellChar, GAME_RULES.CANDY.e.getChar());
+            gameState.put(cellChar, ' ');
             emptyCellChar = cellChar;
+            stepsTaken.add(cellChar);
+            printStepsTaken();
         } else {
             System.out.println("");
         }
@@ -138,5 +147,12 @@ public class GamePlay {
             }
         }
         return true;
+    }
+    
+    /**
+     * Print out all the steps taken
+     */
+    public void printStepsTaken() {
+        System.out.println(stepsTaken);
     }
 }
