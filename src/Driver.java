@@ -5,16 +5,20 @@ import java.util.Scanner;
 
 public class Driver {
     public static void main(String[] args) {
-        int playMode = getPlayMode();
-        switch (playMode) {
-            case 1:
-                manualMode();
-                break;
-            case 2:
-                aiMode();
-                break;
-            default:
-                break;
+        while (true) {
+            int playMode = getPlayMode();
+            switch (playMode) {
+                case 0:
+                    return;
+                case 1:
+                    manualMode();
+                    break;
+                case 2:
+                    aiMode();
+                    break;
+                default:
+                    break;
+            }
         }
     }
     
@@ -24,6 +28,10 @@ public class Driver {
         while (!gamePlay.isGoalState()) {
             gamePlay.drawGameState();
             char cellToMove = getPlayerInstruction();
+            if (cellToMove == Character.MIN_VALUE) {
+                break;
+            }
+            
             gamePlay.moveCandy(cellToMove);
             if (gamePlay.isGoalState()) {
                 System.out.println("You win!!!!");
@@ -48,7 +56,7 @@ public class Driver {
             int input;
             try {
                 input = Integer.parseInt(scanner.nextLine());
-                if (input == 1 || input == 2) {
+                if (input == 0 || input == 1 || input == 2) {
                     return input;
                 }
             } catch (NumberFormatException ignored) {
@@ -62,6 +70,7 @@ public class Driver {
     private static void displayMainMenu() {
         System.out.println();
         System.out.println("====MAIN MENU====");
+        System.out.println("0. Quit");
         System.out.println("1. Play manually");
         System.out.println("2. AI play");
         System.out.print("Your choice: ");
@@ -72,7 +81,10 @@ public class Driver {
             System.out.print("Enter the cell to move: ");
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
-            if (input.length() == 1) {
+            if (input.compareTo("exit") == 0) {
+                return Character.MIN_VALUE;
+            }
+            else if (input.length() == 1) {
                 return input.charAt(0);
             }
         }
