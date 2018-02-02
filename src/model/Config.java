@@ -106,13 +106,13 @@ public class Config {
         }
         
         public static boolean isValidMove(char movedCell, char emptyCell) {
-            movedCell = Character.toUpperCase(movedCell);
+//            movedCell = Character.toUpperCase(movedCell);
             if (isValidCellChar(movedCell) && isValidCellChar(emptyCell)) {
                 ArrayList<Character> movableCells = getCellsMovableTo(emptyCell);
                 if (movableCells.contains(movedCell)) {
                     return true;
                 } else {
-                    System.out.println(INVALID_MOVE);
+//                    System.out.println(INVALID_MOVE);
                     return false;
                 }
             } else {

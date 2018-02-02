@@ -116,6 +116,11 @@ public class GamePlay {
     private char getEmptyCellChar() {
         return emptyCellChar;
     }
+
+
+    public ArrayList<Character> getStepsTaken(){
+        return stepsTaken;
+    }
     
     /**
      * Move the candy at the input cell to the empty cell if possible
@@ -123,15 +128,16 @@ public class GamePlay {
      *
      * @param cellChar the cell character that the moved candy is in
      */
-    public void moveCandy(char cellChar) {
+    public boolean moveCandy(char cellChar) {
         if (GAME_RULES.isValidMove(cellChar, emptyCellChar)) {
             gameState.put(emptyCellChar, gameState.get(cellChar));
             gameState.put(cellChar, ' ');
             emptyCellChar = cellChar;
             stepsTaken.add(cellChar);
             printStepsTaken();
+            return true;
         } else {
-            System.out.println("");
+            return  false;
         }
     }
     
@@ -155,6 +161,10 @@ public class GamePlay {
      * Print out all the steps taken
      */
     public void printStepsTaken() {
-        System.out.println(stepsTaken);
+//        System.out.println(stepsTaken);
+            for(Character c: stepsTaken){
+                System.out.print(c);
+            }
     }
+
 }
