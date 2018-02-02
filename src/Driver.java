@@ -24,6 +24,7 @@ public class Driver {
     
     private static void manualMode() {
         String inputString = "e r r r r r b w b b w y b r y";
+        System.out.print("hello world2");
         GamePlay gamePlay = new GamePlay(inputString);
         while (!gamePlay.isGoalState()) {
             gamePlay.drawGameState();
