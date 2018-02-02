@@ -1,6 +1,7 @@
 import model.Config;
 import model.GamePlay;
-
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Driver {
@@ -11,7 +12,11 @@ public class Driver {
                 case 0:
                     return;
                 case 1:
-                    manualMode();
+                    try {
+                        manualMode();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case 2:
                     aiMode();
@@ -22,22 +27,47 @@ public class Driver {
         }
     }
     
-    private static void manualMode() {
-        String inputString = "e r r r r r b w b b w y b r y";
-        GamePlay gamePlay = new GamePlay(inputString);
-        while (!gamePlay.isGoalState()) {
-            gamePlay.drawGameState();
-            char cellToMove = getPlayerInstruction();
-            if (cellToMove == Character.MIN_VALUE) {
-                break;
+    private static void manualMode() throws IOException {
+        ArrayList<String> inputStringArray = readFile();
+        int numberOfMove = 0;
+        for(String inputString: inputStringArray){
+            long start = System.currentTimeMillis();
+            GamePlay gamePlay = new GamePlay(inputString);
+            System.out.println("New Puzzles");
+            while (!gamePlay.isGoalState()) {
+                gamePlay.drawGameState();
+                char cellToMove = getPlayerInstruction();
+                if (cellToMove == Character.MIN_VALUE) {
+                    break;
+                }
+
+                boolean flag = gamePlay.moveCandy(cellToMove);
+
+                while(!flag){
+                    System.out.print("Invalid input, please input again");
+                    gamePlay.drawGameState();
+                    cellToMove = getPlayerInstruction();
+                    if (cellToMove == Character.MIN_VALUE) {
+                        break;
+                    }
+                    flag = gamePlay.moveCandy(cellToMove);
+                }
+
+                if (gamePlay.isGoalState()) {
+                    System.out.println("You win!!!!");
+                    numberOfMove += gamePlay.getStepsTaken().size();
+                    break;
+                }
             }
-            
-            gamePlay.moveCandy(cellToMove);
-            if (gamePlay.isGoalState()) {
-                System.out.println("You win!!!!");
-                break;
+            long end = System.currentTimeMillis();
+            writeFile(gamePlay.getStepsTaken(),end-start);
+
+            // when pass all the puzzles, write the steps to output.txt
+            if(inputString.equals(inputStringArray.get(inputStringArray.size()-1))){
+                writeNumber(numberOfMove);
             }
         }
+
     }
     
     private static void aiMode() {
@@ -84,9 +114,58 @@ public class Driver {
             if (input.compareTo("exit") == 0) {
                 return Character.MIN_VALUE;
             }
-            else if (input.length() == 1) {
-                return input.charAt(0);
+            else {
+                return Character.toUpperCase(input.charAt(0));
             }
         }
+    }
+
+    /**
+     *    read the input.txt and convert it to an String arraylist
+     * @return  return the input string of initial input
+     * @throws IOException  some files may not be found
+     */
+    private static ArrayList<String > readFile() throws IOException {
+        File inputFile = new File("./input/Sample_Data.txt");
+        ArrayList<String> inputStringArray = new ArrayList<>();
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFile));
+//        String inputString = "e r r r r r b w b b w y b r y";
+        String line = null;
+        while((line = bufferedReader.readLine()) != null){
+            inputStringArray.add(line);
+        }
+        bufferedReader.close();
+        return inputStringArray;
+    }
+
+    /**
+     *      write the output to output.txt
+     * @param stepsTaken  the steps of move
+     * @param time        the time you use to pass the puzzle
+     * @throws IOException      some files may not be found
+     */
+    private static void writeFile(ArrayList<Character> stepsTaken,long time) throws IOException {
+        File outputFile = new File("./output/output.txt");
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile,true));
+        for(Character c: stepsTaken){
+            bufferedWriter.write(c);
+        }
+        bufferedWriter.newLine();
+        bufferedWriter.write(String.valueOf(time)+"ms");
+        bufferedWriter.newLine();
+        bufferedWriter.close();
+    }
+
+    /**
+     *      write the total number of steps to output.txt
+     * @param steps  the total number of steps to pass all puzzles
+     * @throws IOException  some files may not be found
+     */
+    private static void writeNumber (int steps) throws IOException {
+        File outputFile = new File("./output/output.txt");
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile,true));
+        bufferedWriter.write(String.valueOf(steps));
+        bufferedWriter.newLine();
+        bufferedWriter.close();
     }
 }
