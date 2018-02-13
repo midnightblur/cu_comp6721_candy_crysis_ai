@@ -126,9 +126,10 @@ public class Driver {
      * @throws IOException  some files may not be found
      */
     private static ArrayList<String > readFile() throws IOException {
-        File inputFile = new File("./input/Sample_Data.txt");
+//        File inputFile = new File("./input/Sample_Data.txt");
+        InputStream inputStream = Driver.class.getResourceAsStream("Sample_Data.txt");
         ArrayList<String> inputStringArray = new ArrayList<>();
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(inputFile));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 //        String inputString = "e r r r r r b w b b w y b r y";
         String line = null;
         while((line = bufferedReader.readLine()) != null){
