@@ -146,7 +146,7 @@ public class Driver {
      * @throws IOException      some files may not be found
      */
     private static void writeFile(ArrayList<Character> stepsTaken,long time) throws IOException {
-        File outputFile = new File("./output/output.txt");
+        File outputFile = new File("/home/y/yo_li/Desktop/output.txt");
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile,true));
         for(Character c: stepsTaken){
             bufferedWriter.write(c);
@@ -163,7 +163,7 @@ public class Driver {
      * @throws IOException  some files may not be found
      */
     private static void writeNumber (int steps) throws IOException {
-        File outputFile = new File("./output/output.txt");
+        File outputFile = new File("/home/y/yo_li/Desktop/output.txt");
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile,true));
         bufferedWriter.write(String.valueOf(steps));
         bufferedWriter.newLine();
