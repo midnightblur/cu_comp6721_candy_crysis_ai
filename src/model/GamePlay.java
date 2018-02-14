@@ -112,7 +112,7 @@ public class GamePlay {
     }
 
 
-    public ArrayList<Character> getStepsTaken(){
+    public ArrayList<Character> getStepsTaken() {
         return stepsTaken;
     }
     
@@ -123,6 +123,10 @@ public class GamePlay {
      * @param cellChar the cell character that the moved candy is in
      */
     public boolean moveCandy(char cellChar) {
+        // Users type in 'exit' or 'next'
+        if (cellChar == Character.MIN_VALUE || cellChar == Character.MAX_VALUE)
+            return true;
+        
         if (GAME_RULES.isValidMove(cellChar, emptyCellChar)) {
             gameState.put(emptyCellChar, gameState.get(cellChar));
             gameState.put(cellChar, ' ');
