@@ -31,7 +31,9 @@ public class Driver {
     private static void manualMode() throws IOException {
         ArrayList<String> inputStringArray = readFile();
         int numberOfMove = 0;
+        int noGamesPlayed = 0;
         for (String inputString : inputStringArray) {
+            noGamesPlayed++;
             long startTime = System.currentTimeMillis();
             GamePlay gamePlay = new GamePlay(inputString);
             System.out.println("=======================");
@@ -49,24 +51,29 @@ public class Driver {
                     }
                 }
     
-                if (cellToMove == Character.MIN_VALUE) {
+                if (cellToMove == Character.MIN_VALUE) { // 'exit'
+                    writeFile(null, 0);
                     return;
-                } else if (cellToMove == Character.MAX_VALUE) {
+                } else if (cellToMove == Character.MAX_VALUE) { // 'next'
+                    writeFile(null, 0);
                     break;
                 }
                 
                 if (gamePlay.isGoalState()) {
+                    System.out.println();
                     System.out.println("You win!!!!");
                     numberOfMove += gamePlay.getStepsTaken().size();
+                    
+                    // Only write the result to files if the puzzle is solved
+                    long endTime = System.currentTimeMillis();
+                    writeFile(gamePlay.getStepsTaken(), endTime - startTime);
+    
+                    // when pass all the puzzles, write the steps to output.txt
+                    if (noGamesPlayed == inputStringArray.size()) {
+                        writeNumber(numberOfMove);
+                    }
                     break;
                 }
-            }
-            long end = System.currentTimeMillis();
-            writeFile(gamePlay.getStepsTaken(), end - startTime);
-            
-            // when pass all the puzzles, write the steps to output.txt
-            if (inputString.equals(inputStringArray.get(inputStringArray.size() - 1))) {
-                writeNumber(numberOfMove);
             }
         }
         
@@ -133,12 +140,10 @@ public class Driver {
      * @throws IOException some files may not be found
      */
     private static ArrayList<String> readFile() throws IOException {
-//        File inputFile = new File("./input/Sample_Data.txt");
         InputStream inputStream = Driver.class.getResourceAsStream("Sample_Data.txt");
         ArrayList<String> inputStringArray = new ArrayList<>();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-//        String inputString = "e r r r r r b w b b w y b r y";
-        String line = null;
+        String line;
         while ((line = bufferedReader.readLine()) != null) {
             inputStringArray.add(line);
         }
@@ -157,7 +162,7 @@ public class Driver {
     private static void writeFile(ArrayList<Character> stepsTaken, long time) throws IOException {
         File outputFile = new File("output.txt");
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile, true));
-        if (stepsTaken.size() > 0) {
+        if (stepsTaken != null && stepsTaken.size() > 0) {
             for (Character c : stepsTaken) {
                 bufferedWriter.write(c);
             }
