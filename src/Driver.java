@@ -33,11 +33,15 @@ public class Driver {
         for(String inputString: inputStringArray){
             long start = System.currentTimeMillis();
             GamePlay gamePlay = new GamePlay(inputString);
-            System.out.println("New Puzzles");
+            System.out.println("=======================");
+            System.out.println("======NEW  PUZZLE======");
+            System.out.println("=======================");
             while (!gamePlay.isGoalState()) {
                 gamePlay.drawGameState();
                 char cellToMove = getPlayerInstruction();
                 if (cellToMove == Character.MIN_VALUE) {
+                    return;
+                } else if (cellToMove == Character.MAX_VALUE) {
                     break;
                 }
 
@@ -108,12 +112,14 @@ public class Driver {
     
     private static char getPlayerInstruction() {
         while (true) {
-            System.out.print("Enter the cell to move: ");
+            System.out.print("Enter the cell to move (or 'exit or 'next'): ");
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
             if (input.compareTo("") != 0) {
                 if (input.compareTo("exit") == 0) {
                     return Character.MIN_VALUE;
+                } else if (input.compareTo("next") == 0) {
+                    return Character.MAX_VALUE;
                 }
                 else {
                     return Character.toUpperCase(input.charAt(0));

@@ -81,20 +81,14 @@ public class GamePlay {
     public void drawGameState() {
         System.out.println();
         String printFormat = "=====================" + System.lineSeparator() +
-//                        "|   |   |   |   |   |" + System.lineSeparator() +
                         "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
                         "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
-//                        "|   |   |   |   |   |" + System.lineSeparator() +
                         "=====================" + System.lineSeparator() +
-//                        "|   |   |   |   |   |" + System.lineSeparator() +
                         "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
                         "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
-//                        "|   |   |   |   |   |" + System.lineSeparator() +
                         "=====================" + System.lineSeparator() +
-//                        "|   |   |   |   |   |" + System.lineSeparator() +
                         "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
                         "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
-//                        "|   |   |   |   |   |" + System.lineSeparator() +
                         "=====================" + System.lineSeparator();
         ArrayList<Character> cellChars = new ArrayList<>(gameState.keySet());
         ArrayList<Character> candyChars = new ArrayList<>(gameState.values());
