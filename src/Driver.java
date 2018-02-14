@@ -111,11 +111,13 @@ public class Driver {
             System.out.print("Enter the cell to move: ");
             Scanner scanner = new Scanner(System.in);
             String input = scanner.nextLine();
-            if (input.compareTo("exit") == 0) {
-                return Character.MIN_VALUE;
-            }
-            else {
-                return Character.toUpperCase(input.charAt(0));
+            if (input.compareTo("") != 0) {
+                if (input.compareTo("exit") == 0) {
+                    return Character.MIN_VALUE;
+                }
+                else {
+                    return Character.toUpperCase(input.charAt(0));
+                }
             }
         }
     }
