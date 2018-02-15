@@ -161,6 +161,7 @@ public class Driver {
      */
     private static void writeFile(ArrayList<Character> stepsTaken, long time) throws IOException {
         File outputFile = new File("output.txt");
+        outputFile.createNewFile();
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile, true));
         if (stepsTaken != null && stepsTaken.size() > 0) {
             for (Character c : stepsTaken) {
@@ -185,6 +186,7 @@ public class Driver {
      */
     private static void writeNumber(int steps) throws IOException {
         File outputFile = new File("output.txt");
+        outputFile.createNewFile();
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFile, true));
         bufferedWriter.write(String.valueOf(steps));
         bufferedWriter.newLine();
