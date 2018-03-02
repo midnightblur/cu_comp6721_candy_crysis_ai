@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -10,6 +11,7 @@ public class GamePlay {
     private TreeMap<Character, Character> gameState;
     private ArrayList<Character> stepsTaken;
     private char emptyCellChar;
+    private HashMap<Character, Integer> candiesCount;
     
     /**
      * Initialize a new game from an input string representing the initial state
@@ -20,15 +22,18 @@ public class GamePlay {
         gameState = new TreeMap<>();
         stepsTaken = new ArrayList<>();
         emptyCellChar = Character.MIN_VALUE;
+        candiesCount = new HashMap<>();
         
         // Initialize the initial state
         ArrayList<Character> input = readInitialState(inputString);
         for (int i = 0; i < input.size(); i++) {
+            char candyChar = input.get(i);
             char cellChar = GAME_RULES.getCellCharByIndex(i);
             if (input.get(i) == GAME_RULES.CANDY.e.getChar()) {
                 emptyCellChar = cellChar;
             }
-            gameState.put(cellChar, input.get(i));
+            gameState.put(cellChar, candyChar);
+            candiesCount.put(candyChar, candiesCount.getOrDefault(candyChar, 0) + 1);
         }
         
         // Display empty cell instead of character 'e'
@@ -164,5 +169,14 @@ public class GamePlay {
                 System.out.print(c);
             }
     }
-
+    
+    /**
+     * Get the total number of candies of one kind
+     *
+     * @param candyChar the candy kind character
+     * @return the number of candies of that kind
+     */
+    public int getCandyCount(char candyChar) {
+        return candiesCount.getOrDefault(candyChar, 0);
+    }
 }
