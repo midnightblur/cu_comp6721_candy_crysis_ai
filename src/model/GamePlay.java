@@ -72,15 +72,6 @@ public class GamePlay {
     }
     
     /**
-     * Gets the current state of the board
-     *
-     * @return the state of the board
-     */
-    public TreeMap<Character, Character> getGameState() {
-        return gameState;
-    }
-    
-    /**
      * Draw the state of the board to console
      */
     public void drawGameState() {
@@ -178,5 +169,68 @@ public class GamePlay {
      */
     public int getCandyCount(char candyChar) {
         return candiesCount.getOrDefault(candyChar, 0);
+    }
+    
+    /**
+     * Get the candy at a cell
+     *
+     * @param cellChar the cell character
+     * @return the candy character in the cell
+     */
+    public char getCandyAt(char cellChar) {
+        return gameState.get(cellChar);
+    }
+    
+    /**
+     * Check if either the top or the bottom row is valid
+     * A valid row is a row does not have more than half candies out of total of any kind
+     *
+     * @return 0 if now row is valid, 1 if top row is valid, 2 if bottom row is valid, 3 if both rows are valid
+     */
+    public int hasValidRow() {
+        int result = 0;
+        
+        Map<Character, Integer> candiesCountTopRow = new HashMap<>();
+        for (int i = 0; i < 5; i++) {
+            char cellChar = (char) (i + 65);
+            char candyChar = getCandyAt(cellChar);
+            candiesCountTopRow.put(candyChar, candiesCountTopRow.getOrDefault(candyChar, 0) + 1);
+        }
+        
+        Map<Character, Integer> candiesCountBottomRow = new HashMap<>();
+        for (int i = 10; i < 15; i++) {
+            char cellChar = (char) (i + 65);
+            char candyChar = getCandyAt(cellChar);
+            candiesCountBottomRow.put(candyChar, candiesCountBottomRow.getOrDefault(candyChar, 0) + 1);
+        }
+        
+        boolean isTopRowValid = isValidRow(candiesCountTopRow);
+        boolean isBottomRowValid = isValidRow(candiesCountBottomRow);;
+        
+        if (isTopRowValid && isBottomRowValid)
+            result = 3;
+        else if (isTopRowValid)
+            result = 1;
+        else if (isBottomRowValid)
+            result = 2;
+        
+        return result;
+    }
+    
+    /**
+     * Check if a row is valid given its candies count
+     *
+     * @param candiesCount candies count data
+     * @return true if the data is valid, false otherwise
+     */
+    private boolean isValidRow(Map<Character, Integer> candiesCount) {
+        for (char candyChar : candiesCount.keySet()) {
+            int totalCandyCount = getCandyCount(candyChar);
+            int candyCountInRow = candiesCount.get(candyChar);
+            if (candyCountInRow > totalCandyCount / 2) {
+                return false;
+            }
+        }
+        return true;
     }
 }

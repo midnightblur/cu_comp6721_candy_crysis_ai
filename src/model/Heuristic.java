@@ -1,8 +1,8 @@
 package model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Heuristic {
-    public static boolean isValidTopBottomRow(GamePlay gamePlay) {
-        
-        return true;
-    }
+    
 }
