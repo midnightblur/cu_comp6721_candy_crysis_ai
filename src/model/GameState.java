@@ -7,8 +7,8 @@ import java.util.TreeMap;
 
 import static model.Config.*;
 
-public class GamePlay {
-    private TreeMap<Character, Character> gameState;
+public class GameState {
+    private TreeMap<Character, Character> theBoard;
     private ArrayList<Character> stepsTaken;
     private char emptyCellChar;
     private HashMap<Character, Integer> candiesCount;
@@ -18,8 +18,8 @@ public class GamePlay {
      *
      * @param inputString the input string
      */
-    public GamePlay(String inputString) {
-        gameState = new TreeMap<>();
+    public GameState(String inputString) {
+        theBoard = new TreeMap<>();
         stepsTaken = new ArrayList<>();
         emptyCellChar = Character.MIN_VALUE;
         candiesCount = new HashMap<>();
@@ -32,12 +32,12 @@ public class GamePlay {
             if (input.get(i) == GAME_RULES.CANDY.e.getChar()) {
                 emptyCellChar = cellChar;
             }
-            gameState.put(cellChar, candyChar);
+            theBoard.put(cellChar, candyChar);
             candiesCount.put(candyChar, candiesCount.getOrDefault(candyChar, 0) + 1);
         }
         
         // Display empty cell instead of character 'e'
-        for (Map.Entry entry : gameState.entrySet()) {
+        for (Map.Entry entry : theBoard.entrySet()) {
             if ((char) entry.getValue() == GAME_RULES.CANDY.e.getChar()) {
                 entry.setValue(' ');
                 break;
@@ -86,8 +86,8 @@ public class GamePlay {
                         "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
                         "| %c | %c | %c | %c | %c |" + System.lineSeparator() +
                         "=====================" + System.lineSeparator();
-        ArrayList<Character> cellChars = new ArrayList<>(gameState.keySet());
-        ArrayList<Character> candyChars = new ArrayList<>(gameState.values());
+        ArrayList<Character> cellChars = new ArrayList<>(theBoard.keySet());
+        ArrayList<Character> candyChars = new ArrayList<>(theBoard.values());
         System.out.printf(printFormat,
                 cellChars.get(0), cellChars.get(1), cellChars.get(2), cellChars.get(3), cellChars.get(4),
                 candyChars.get(0), candyChars.get(1), candyChars.get(2), candyChars.get(3), candyChars.get(4),
@@ -124,8 +124,8 @@ public class GamePlay {
             return true;
         
         if (GAME_RULES.isValidMove(cellChar, emptyCellChar)) {
-            gameState.put(emptyCellChar, gameState.get(cellChar));
-            gameState.put(cellChar, ' ');
+            theBoard.put(emptyCellChar, theBoard.get(cellChar));
+            theBoard.put(cellChar, ' ');
             emptyCellChar = cellChar;
             stepsTaken.add(cellChar);
             printStepsTaken();
@@ -144,7 +144,7 @@ public class GamePlay {
         for (int i = 0; i < 5; i++) {
             char topCellChar = (char) (i + 65);
             char bottomCellChar = (char) (i + 65 + GAME_RULES.GOAL_STATE_MATCHING_CELL_DISTANCE);
-            if (gameState.get(topCellChar) != gameState.get(bottomCellChar)) {
+            if (theBoard.get(topCellChar) != theBoard.get(bottomCellChar)) {
                 return false;
             }
         }
@@ -178,7 +178,7 @@ public class GamePlay {
      * @return the candy character in the cell
      */
     public char getCandyAt(char cellChar) {
-        return gameState.get(cellChar);
+        return theBoard.get(cellChar);
     }
     
     /**

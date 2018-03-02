@@ -1,5 +1,4 @@
-import model.Config;
-import model.GamePlay;
+import model.GameState;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -35,17 +34,17 @@ public class Driver {
         for (String inputString : inputStringArray) {
             noGamesPlayed++;
             long startTime = System.currentTimeMillis();
-            GamePlay gamePlay = new GamePlay(inputString);
+            GameState gameState = new GameState(inputString);
             System.out.println("=======================");
             System.out.println("======NEW  PUZZLE======");
             System.out.println("=======================");
-            while (!gamePlay.isGoalState()) {
+            while (!gameState.isGoalState()) {
                 boolean isValidMove = false;
                 char cellToMove = 0;
                 while (!isValidMove) {
-                    gamePlay.drawGameState();
+                    gameState.drawGameState();
                     cellToMove = getPlayerInstruction();
-                    isValidMove = gamePlay.moveCandy(cellToMove);
+                    isValidMove = gameState.moveCandy(cellToMove);
                     if (!isValidMove) {
                         System.out.print("Invalid input, please input again");
                     }
@@ -59,14 +58,14 @@ public class Driver {
                     break;
                 }
                 
-                if (gamePlay.isGoalState()) {
+                if (gameState.isGoalState()) {
                     System.out.println();
                     System.out.println("You win!!!!");
-                    numberOfMove += gamePlay.getStepsTaken().size();
+                    numberOfMove += gameState.getStepsTaken().size();
                     
                     // Only write the result to files if the puzzle is solved
                     long endTime = System.currentTimeMillis();
-                    writeFile(gamePlay.getStepsTaken(), endTime - startTime);
+                    writeFile(gameState.getStepsTaken(), endTime - startTime);
     
                     // when pass all the puzzles, write the steps to output.txt
                     if (noGamesPlayed == inputStringArray.size()) {
