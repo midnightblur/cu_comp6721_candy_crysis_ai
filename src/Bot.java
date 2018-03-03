@@ -43,6 +43,7 @@ public class Bot {
             if (childState != null) {
                 childState.setParentState(gameState);
                 childState.moveCandyAt(moveChar);
+                computeHeuristicValue(childState);
                 gameState.addNewChild(childState);
                 openList.add(childState);
             }
@@ -59,5 +60,22 @@ public class Bot {
      */
     private boolean isAlreadyProcessed(GameState gameState) {
         return processedBoard.getOrDefault(gameState.toString(), false);
+    }
+    
+    public int computeHeuristicValue(GameState gameState) {
+        int hValue = heuristic1(gameState);
+        gameState.setHeuristicValue(hValue);
+        return hValue;
+    }
+    
+    /**
+     * Player could move any tile to the empty slot
+     * Heuristic value is the minimum # of tiles need to move to reach goal state
+     *
+     * @param gameState the game state
+     * @return the heuristic value
+     */
+    private int heuristic1(GameState gameState) {
+    
     }
 }

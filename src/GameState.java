@@ -24,6 +24,7 @@ public class GameState implements Comparable<GameState>, Serializable {
         emptyCellChar = Character.MIN_VALUE;
         candiesCount = new HashMap<>();
         actualCostToReach = 0;
+        heuristicValue = Double.MAX_VALUE;
         
         // Initialize the initial state
         ArrayList<Character> input = readInitialState(inputString);
@@ -36,8 +37,6 @@ public class GameState implements Comparable<GameState>, Serializable {
             theBoard.put(cellChar, candyChar);
             candiesCount.put(candyChar, candiesCount.getOrDefault(candyChar, 0) + 1);
         }
-        
-        heuristicValue = Heuristic.computeHeuristicValue(this);
         
         // Display empty cell instead of character 'e'
         for (Map.Entry entry : theBoard.entrySet()) {
@@ -130,6 +129,7 @@ public class GameState implements Comparable<GameState>, Serializable {
             theBoard.put(cellChar, ' ');
             emptyCellChar = cellChar;
             stepsTaken.add(cellChar);
+            actualCostToReach++;
             printStepsTaken();
             return true;
         } else {
@@ -244,6 +244,10 @@ public class GameState implements Comparable<GameState>, Serializable {
         return heuristicValue;
     }
     
+    public void setHeuristicValue(double heuristicValue) {
+        this.heuristicValue = heuristicValue;
+    }
+    
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -259,10 +263,6 @@ public class GameState implements Comparable<GameState>, Serializable {
     
     public void setParentState(GameState parentState) {
         this.parentState = parentState;
-        if (parentState != null)
-            this.actualCostToReach = parentState.getActualCostToReach() + 1;
-        else
-            this.actualCostToReach = 0;
     }
     
     public ArrayList<GameState> getChildStates() {
