@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import static model.Config.*;
 
 public class GameState {
+    private int actualCostToReach;
     private TreeMap<Character, Character> theBoard;
     private ArrayList<Character> stepsTaken;
     private char emptyCellChar;
@@ -106,7 +107,6 @@ public class GameState {
     private char getEmptyCellChar() {
         return emptyCellChar;
     }
-
 
     public ArrayList<Character> getStepsTaken() {
         return stepsTaken;
@@ -232,5 +232,23 @@ public class GameState {
             }
         }
         return true;
+    }
+    
+    public int getActualCostToReach() {
+        return actualCostToReach;
+    }
+    
+    public void setActualCostToReach(int actualCostToReach) {
+        this.actualCostToReach = actualCostToReach;
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (char candyChar : theBoard.values()) {
+            stringBuilder.append(candyChar + " ");
+        }
+        String result = stringBuilder.substring(0, stringBuilder.length() - 2);
+        return result;
     }
 }

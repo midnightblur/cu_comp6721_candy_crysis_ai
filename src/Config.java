@@ -2,7 +2,6 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.TreeMap;
 
 public class Config {
     public static class GAME_RULES {
