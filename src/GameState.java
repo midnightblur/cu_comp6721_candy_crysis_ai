@@ -1,11 +1,7 @@
-package model;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
-import static model.Config.*;
 
 public class GameState {
     private int actualCostToReach;
@@ -29,8 +25,8 @@ public class GameState {
         ArrayList<Character> input = readInitialState(inputString);
         for (int i = 0; i < input.size(); i++) {
             char candyChar = input.get(i);
-            char cellChar = GAME_RULES.getCellCharByIndex(i);
-            if (input.get(i) == GAME_RULES.CANDY.e.getChar()) {
+            char cellChar = Config.GAME_RULES.getCellCharByIndex(i);
+            if (input.get(i) == Config.GAME_RULES.CANDY.e.getChar()) {
                 emptyCellChar = cellChar;
             }
             theBoard.put(cellChar, candyChar);
@@ -39,7 +35,7 @@ public class GameState {
         
         // Display empty cell instead of character 'e'
         for (Map.Entry entry : theBoard.entrySet()) {
-            if ((char) entry.getValue() == GAME_RULES.CANDY.e.getChar()) {
+            if ((char) entry.getValue() == Config.GAME_RULES.CANDY.e.getChar()) {
                 entry.setValue(' ');
                 break;
             }
@@ -61,10 +57,10 @@ public class GameState {
             inputString = inputString.trim();
             char candyChar = inputString.charAt(0);
             inputString = inputString.substring(1);
-            if (GAME_RULES.isValidCandyChar(candyChar)) {
+            if (Config.GAME_RULES.isValidCandyChar(candyChar)) {
                 initialState.add(candyChar);
             } else {
-                throw new IllegalArgumentException(GAME_RULES.INVALID_CANDY);
+                throw new IllegalArgumentException(Config.GAME_RULES.INVALID_CANDY);
             }
         }
         
@@ -123,7 +119,7 @@ public class GameState {
         if (cellChar == Character.MIN_VALUE || cellChar == Character.MAX_VALUE)
             return true;
         
-        if (GAME_RULES.isValidMove(cellChar, emptyCellChar)) {
+        if (Config.GAME_RULES.isValidMove(cellChar, emptyCellChar)) {
             theBoard.put(emptyCellChar, theBoard.get(cellChar));
             theBoard.put(cellChar, ' ');
             emptyCellChar = cellChar;
@@ -143,7 +139,7 @@ public class GameState {
     public boolean isGoalState() {
         for (int i = 0; i < 5; i++) {
             char topCellChar = (char) (i + 65);
-            char bottomCellChar = (char) (i + 65 + GAME_RULES.GOAL_STATE_MATCHING_CELL_DISTANCE);
+            char bottomCellChar = (char) (i + 65 + Config.GAME_RULES.GOAL_STATE_MATCHING_CELL_DISTANCE);
             if (theBoard.get(topCellChar) != theBoard.get(bottomCellChar)) {
                 return false;
             }
