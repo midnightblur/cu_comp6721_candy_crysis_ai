@@ -1,5 +1,5 @@
 public class Heuristic {
-    public static int getHeuristicValue(GameState gameState) {
+    public static int computeHeuristicValue(GameState gameState) {
         return 0;
     }
 }

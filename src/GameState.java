@@ -1,10 +1,11 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.io.*;
+import java.util.*;
 
-public class GameState {
+public class GameState implements Comparable<GameState>, Serializable {
+    private GameState parentState;
+    private ArrayList<GameState> childStates;
     private int actualCostToReach;
+    private double heuristicValue;
     private TreeMap<Character, Character> theBoard;
     private ArrayList<Character> stepsTaken;
     private char emptyCellChar;
@@ -16,10 +17,13 @@ public class GameState {
      * @param inputString the input string
      */
     public GameState(String inputString) {
+        parentState = null;
+        childStates = new ArrayList<>();
         theBoard = new TreeMap<>();
         stepsTaken = new ArrayList<>();
         emptyCellChar = Character.MIN_VALUE;
         candiesCount = new HashMap<>();
+        actualCostToReach = 0;
         
         // Initialize the initial state
         ArrayList<Character> input = readInitialState(inputString);
@@ -32,6 +36,8 @@ public class GameState {
             theBoard.put(cellChar, candyChar);
             candiesCount.put(candyChar, candiesCount.getOrDefault(candyChar, 0) + 1);
         }
+        
+        heuristicValue = Heuristic.computeHeuristicValue(this);
         
         // Display empty cell instead of character 'e'
         for (Map.Entry entry : theBoard.entrySet()) {
@@ -100,7 +106,7 @@ public class GameState {
      *
      * @return the current empty cell character
      */
-    private char getEmptyCellChar() {
+    public char getEmptyCellChar() {
         return emptyCellChar;
     }
 
@@ -114,7 +120,7 @@ public class GameState {
      *
      * @param cellChar the cell character that the moved candy is in
      */
-    public boolean moveCandy(char cellChar) {
+    public boolean moveCandyAt(char cellChar) {
         // Users type in 'exit' or 'next'
         if (cellChar == Character.MIN_VALUE || cellChar == Character.MAX_VALUE)
             return true;
@@ -234,17 +240,133 @@ public class GameState {
         return actualCostToReach;
     }
     
-    public void setActualCostToReach(int actualCostToReach) {
-        this.actualCostToReach = actualCostToReach;
+    public double getHeuristicValue() {
+        return heuristicValue;
     }
     
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         for (char candyChar : theBoard.values()) {
-            stringBuilder.append(candyChar + " ");
+            stringBuilder.append(candyChar).append(" ");
         }
-        String result = stringBuilder.substring(0, stringBuilder.length() - 2);
-        return result;
+        return stringBuilder.substring(0, stringBuilder.length() - 1);
+    }
+    
+    public GameState getParentState() {
+        return parentState;
+    }
+    
+    public void setParentState(GameState parentState) {
+        this.parentState = parentState;
+        if (parentState != null)
+            this.actualCostToReach = parentState.getActualCostToReach() + 1;
+        else
+            this.actualCostToReach = 0;
+    }
+    
+    public ArrayList<GameState> getChildStates() {
+        return childStates;
+    }
+    
+    public TreeMap<Character, Character> getTheBoard() {
+        return theBoard;
+    }
+    
+    public void addNewChild(GameState newChildState) {
+        childStates.add(newChildState);
+    }
+    
+    public int getChildCount() {
+        return childStates.size();
+    }
+    
+    private void clearAllChild() {
+        childStates.clear();
+    }
+    
+    /**
+     * Compares this object with the specified object for order.  Returns a
+     * negative integer, zero, or a positive integer as this object is less
+     * than, equal to, or greater than the specified object.
+     *
+     * <p>The implementor must ensure <tt>sgn(x.compareTo(y)) ==
+     * -sgn(y.compareTo(x))</tt> for all <tt>x</tt> and <tt>y</tt>.  (This
+     * implies that <tt>x.compareTo(y)</tt> must throw an exception iff
+     * <tt>y.compareTo(x)</tt> throws an exception.)
+     *
+     * <p>The implementor must also ensure that the relation is transitive:
+     * <tt>(x.compareTo(y)&gt;0 &amp;&amp; y.compareTo(z)&gt;0)</tt> implies
+     * <tt>x.compareTo(z)&gt;0</tt>.
+     *
+     * <p>Finally, the implementor must ensure that <tt>x.compareTo(y)==0</tt>
+     * implies that <tt>sgn(x.compareTo(z)) == sgn(y.compareTo(z))</tt>, for
+     * all <tt>z</tt>.
+     *
+     * <p>It is strongly recommended, but <i>not</i> strictly required that
+     * <tt>(x.compareTo(y)==0) == (x.equals(y))</tt>.  Generally speaking, any
+     * class that implements the <tt>Comparable</tt> interface and violates
+     * this condition should clearly indicate this fact.  The recommended
+     * language is "Note: this class has a natural ordering that is
+     * inconsistent with equals."
+     *
+     * <p>In the foregoing description, the notation
+     * <tt>sgn(</tt><i>expression</i><tt>)</tt> designates the mathematical
+     * <i>signum</i> function, which is defined to return one of <tt>-1</tt>,
+     * <tt>0</tt>, or <tt>1</tt> according to whether the value of
+     * <i>expression</i> is negative, zero or positive.
+     *
+     * @param otherGameState the object to be compared.
+     *
+     * @return a negative integer, zero, or a positive integer as this object
+     * is less than, equal to, or greater than the specified object.
+     *
+     * @throws NullPointerException if the specified object is null
+     * @throws ClassCastException   if the specified object's type prevents it
+     *                              from being compared to this object.
+     */
+    @Override
+    public int compareTo(GameState otherGameState) {
+        if (this.heuristicValue + this.actualCostToReach < otherGameState.heuristicValue + otherGameState.actualCostToReach)
+            return -1;
+        else if (this.heuristicValue + this.actualCostToReach > otherGameState.heuristicValue + otherGameState.actualCostToReach)
+            return 1;
+        
+        if (this.toString().compareTo(otherGameState.toString()) == 0)
+            return 0;
+        else
+            return 1;
+    }
+    
+    @Override
+    public boolean equals(Object object) {
+        if (object == null)
+            return false;
+        if (object instanceof GameState) {
+            GameState otherGameState = (GameState) object;
+            if (object.toString().compareTo(otherGameState.toString()) == 0) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    public static GameState deepClone(GameState object) {
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(object);
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            GameState gameState = (GameState) ois.readObject();
+            gameState.setParentState(null);
+            gameState.clearAllChild();
+            return gameState;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -17,7 +17,11 @@ public class Driver {
                     }
                     break;
                 case 2:
-                    aiMode();
+                    try {
+                        aiMode();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 default:
                     break;
@@ -42,7 +46,7 @@ public class Driver {
                 while (!isValidMove) {
                     gameState.drawGameState();
                     cellToMove = getPlayerInstruction();
-                    isValidMove = gameState.moveCandy(cellToMove);
+                    isValidMove = gameState.moveCandyAt(cellToMove);
                     if (!isValidMove) {
                         System.out.print("Invalid input, please input again");
                     }
@@ -73,10 +77,36 @@ public class Driver {
                 }
             }
         }
-        
     }
     
-    private static void aiMode() {
+    private static void aiMode() throws IOException {
+        ArrayList<String> inputStringArray = readFile();
+        int numberOfMove = 0;
+        int noGamesPlayed = 0;
+        for (String inputString : inputStringArray) {
+            noGamesPlayed++;
+            long startTime = System.currentTimeMillis();
+            GameState gameState = new GameState(inputString);
+            Bot bot = new Bot();
+            boolean isSuccess = true;
+            while (isSuccess) {
+                isSuccess = bot.play(gameState);
+    
+                if (isSuccess) {
+                    numberOfMove += gameState.getStepsTaken().size();
+        
+                    // Only write the result to files if the puzzle is solved
+                    long endTime = System.currentTimeMillis();
+                    writeFile(gameState.getStepsTaken(), endTime - startTime);
+        
+                    // when pass all the puzzles, write the steps to output.txt
+                    if (noGamesPlayed == inputStringArray.size()) {
+                        writeNumber(numberOfMove);
+                    }
+                    break;
+                }
+            }
+        }
     }
     
     /**
