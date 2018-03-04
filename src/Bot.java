@@ -20,7 +20,6 @@ public class Bot {
                 if (!bestNewState.isGoalState()) {
                     processState(bestNewState);
                     bestNewState.drawGameState();
-                    System.out.println(bestNewState.toString());
                 } else {
                     return true;
                 }
@@ -76,6 +75,6 @@ public class Bot {
      * @return the heuristic value
      */
     private int heuristic1(GameState gameState) {
-    
+        return 0;
     }
 }
