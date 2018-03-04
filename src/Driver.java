@@ -88,16 +88,16 @@ public class Driver {
             long startTime = System.currentTimeMillis();
             GameState gameState = new GameState(inputString);
             Bot bot = new Bot();
-            boolean isSuccess = true;
-            while (isSuccess) {
-                isSuccess = bot.play(gameState);
+            while (true) {
+                GameState goalState = bot.play(gameState);
     
-                if (isSuccess) {
-                    numberOfMove += gameState.getStepsTaken().size();
+                if (goalState != null) {
+                    goalState.drawGameState();
+                    numberOfMove += goalState.getStepsTaken().size();
         
                     // Only write the result to files if the puzzle is solved
                     long endTime = System.currentTimeMillis();
-                    writeFile(gameState.getStepsTaken(), endTime - startTime);
+                    writeFile(goalState.getStepsTaken(), endTime - startTime);
         
                     // when pass all the puzzles, write the steps to output.txt
                     if (noGamesPlayed == inputStringArray.size()) {

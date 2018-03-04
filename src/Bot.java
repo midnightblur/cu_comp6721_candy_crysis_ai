@@ -11,7 +11,7 @@ public class Bot {
      *
      * @param rootGameState the initial game state
      */
-    public boolean play(GameState rootGameState) {
+    public GameState play(GameState rootGameState) {
         openList.add(rootGameState);
         
         while (!openList.isEmpty()) {
@@ -21,12 +21,12 @@ public class Bot {
                     processState(bestNewState);
                     bestNewState.drawGameState();
                 } else {
-                    return true;
+                    return bestNewState;
                 }
             }
         }
         
-        return false;
+        return null;
     }
     
     /**
