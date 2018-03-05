@@ -70,7 +70,7 @@ public class Bot {
     }
     
     /**
-     * Player could move any tile to the empty slot
+     * Player could move any tile to any where
      * Heuristic value is the minimum # of tiles need to move to reach goal state
      *
      * @param gameState the game state
