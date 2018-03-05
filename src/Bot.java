@@ -77,6 +77,24 @@ public class Bot {
      * @return the heuristic value
      */
     private int heuristic1(GameState gameState) {
-        return 0;
+        int heuristicValue = 0;
+        int hasValidRow = gameState.hasValidRow();
+        switch (hasValidRow) {
+            case 0:
+                heuristicValue += 10;
+                break;
+            case 1:
+            case 2:
+            case 3: {
+                ArrayList<Character> row0 = gameState.getRow(0);
+                ArrayList<Character> row2 = gameState.getRow(2);
+                for (int i = 0; i < row0.size(); i++) {
+                    if (row0.get(i) != row2.get(i))
+                        heuristicValue++;
+                }
+                break;
+            }
+        }
+        return heuristicValue;
     }
 }

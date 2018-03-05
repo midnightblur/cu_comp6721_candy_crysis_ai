@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class GameState implements Comparable<GameState>, Serializable {
@@ -279,6 +280,16 @@ public class GameState implements Comparable<GameState>, Serializable {
     
     public int getChildCount() {
         return childStates.size();
+    }
+    
+    public ArrayList<Character> getRow(int rowIndex) {
+        int i = rowIndex * 5;
+        ArrayList<Character> row = new ArrayList<>();
+        for (int j = 65 + i; j < 65 + i + 5; j++) {
+            char cellChar = (char) (j);
+            row.add(theBoard.get(cellChar));
+        }
+        return row;
     }
     
     private void clearAllChild() {
