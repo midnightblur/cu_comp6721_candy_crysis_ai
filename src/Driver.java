@@ -51,7 +51,7 @@ public class Driver {
                         System.out.print("Invalid input, please input again");
                     }
                 }
-    
+                
                 if (cellToMove == Character.MIN_VALUE) { // 'exit'
                     writeFile(null, 0);
                     return;
@@ -68,7 +68,7 @@ public class Driver {
                     // Only write the result to files if the puzzle is solved
                     long endTime = System.currentTimeMillis();
                     writeFile(gameState.getStepsTaken(), endTime - startTime);
-    
+                    
                     // when pass all the puzzles, write the steps to output.txt
                     if (noGamesPlayed == inputStringArray.size()) {
                         writeNumber(numberOfMove);
@@ -88,22 +88,20 @@ public class Driver {
             long startTime = System.currentTimeMillis();
             GameState gameState = new GameState(inputString);
             Bot bot = new Bot();
-            while (true) {
-                GameState goalState = bot.play(gameState);
-    
-                if (goalState != null) {
-                    goalState.drawGameState();
-                    numberOfMove += goalState.getStepsTaken().size();
-        
-                    // Only write the result to files if the puzzle is solved
-                    long endTime = System.currentTimeMillis();
-                    writeFile(goalState.getStepsTaken(), endTime - startTime);
-        
-                    // when pass all the puzzles, write the steps to output.txt
-                    if (noGamesPlayed == inputStringArray.size()) {
-                        writeNumber(numberOfMove);
-                    }
-                    break;
+            GameState goalState = bot.play(gameState);
+            
+            if (goalState != null) {
+                goalState.drawGameState();
+                goalState.printStepsTaken();
+                numberOfMove += goalState.getStepsTaken().size();
+                
+                // Only write the result to files if the puzzle is solved
+                long endTime = System.currentTimeMillis();
+                writeFile(goalState.getStepsTaken(), endTime - startTime);
+                
+                // when pass all the puzzles, write the steps to output.txt
+                if (noGamesPlayed == inputStringArray.size()) {
+                    writeNumber(numberOfMove);
                 }
             }
         }

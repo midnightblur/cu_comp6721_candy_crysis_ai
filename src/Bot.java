@@ -1,11 +1,11 @@
 import java.util.*;
 
 public class Bot {
-    private TreeSet<GameState> openList;
-    private Set<String> closedList;
+    private OpenList openList;
+    private HashSet<String> closedList;
     
     public Bot() {
-        openList = new TreeSet<>();
+        openList = new OpenList();
         closedList = new HashSet<>();
     }
     
@@ -15,14 +15,13 @@ public class Bot {
      * @param rootGameState the initial game state
      */
     public GameState play(GameState rootGameState) {
-        openList.add(rootGameState);
+        openList.addNewItem(rootGameState);
         
         while (!openList.isEmpty()) {
-            GameState bestNewState = openList.pollFirst();
+            GameState bestNewState = openList.pollFirstItem();
             if (bestNewState != null && !isAlreadyProcessed(bestNewState)) {
                 if (!bestNewState.isGoalState()) {
                     processState(bestNewState);
-                    bestNewState.drawGameState();
                 } else {
                     return bestNewState;
                 }
@@ -39,15 +38,15 @@ public class Bot {
      */
     private void processState(GameState gameState) {
         closedList.add(gameState.toString());
-        ArrayList<Character> validMoves = Config.GAME_RULES.getCellsMovableTo(gameState.getEmptyCellChar());
-        for (char moveChar : validMoves) {
+        ArrayList<Character> validMovesList = Config.GAME_RULES.getCellsMovableTo(gameState.getEmptyCellChar());
+        for (char move : validMovesList) {
             GameState childState = GameState.deepClone(gameState);
             if (childState != null) {
+                childState.moveCandyAt(move);
                 childState.setParentState(gameState);
-                childState.moveCandyAt(moveChar);
                 computeHeuristicValue(childState);
                 gameState.addNewChild(childState);
-                openList.add(childState);
+                openList.addNewItem(childState);
             }
         }
     }

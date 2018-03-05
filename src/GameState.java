@@ -5,7 +5,7 @@ public class GameState implements Comparable<GameState>, Serializable {
     private GameState parentState;
     private ArrayList<GameState> childStates;
     private int actualCostToReach;
-    private double heuristicValue;
+    private int heuristicValue;
     private TreeMap<Character, Character> theBoard;
     private ArrayList<Character> stepsTaken;
     private char emptyCellChar;
@@ -24,7 +24,7 @@ public class GameState implements Comparable<GameState>, Serializable {
         emptyCellChar = Character.MIN_VALUE;
         candiesCount = new HashMap<>();
         actualCostToReach = 0;
-        heuristicValue = Double.MAX_VALUE;
+        heuristicValue = Integer.MAX_VALUE;
         
         // Initialize the initial state
         ArrayList<Character> input = readInitialState(inputString);
@@ -130,7 +130,7 @@ public class GameState implements Comparable<GameState>, Serializable {
             emptyCellChar = cellChar;
             stepsTaken.add(cellChar);
             actualCostToReach++;
-            printStepsTaken();
+//            printStepsTaken();
             return true;
         } else {
             return  false;
@@ -244,7 +244,7 @@ public class GameState implements Comparable<GameState>, Serializable {
         return heuristicValue;
     }
     
-    public void setHeuristicValue(double heuristicValue) {
+    public void setHeuristicValue(int heuristicValue) {
         this.heuristicValue = heuristicValue;
     }
     
@@ -327,15 +327,12 @@ public class GameState implements Comparable<GameState>, Serializable {
      */
     @Override
     public int compareTo(GameState otherGameState) {
-        if (this.heuristicValue + this.actualCostToReach < otherGameState.heuristicValue + otherGameState.actualCostToReach)
-            return -1;
-        else if (this.heuristicValue + this.actualCostToReach > otherGameState.heuristicValue + otherGameState.actualCostToReach)
-            return 1;
+        int thisCost = this.heuristicValue + this.actualCostToReach;
+        int otherCost = otherGameState.heuristicValue + otherGameState.actualCostToReach;
+        if (thisCost != otherCost)
+            return (thisCost - otherCost);
         
-        if (this.toString().compareTo(otherGameState.toString()) == 0)
-            return 0;
-        else
-            return 1;
+        return this.toString().compareTo(otherGameState.toString());
     }
     
     @Override
@@ -344,9 +341,7 @@ public class GameState implements Comparable<GameState>, Serializable {
             return false;
         if (object instanceof GameState) {
             GameState otherGameState = (GameState) object;
-            if (object.toString().compareTo(otherGameState.toString()) == 0) {
-                return true;
-            }
+            return (object.toString().compareTo(otherGameState.toString()) == 0);
         }
         
         return false;
