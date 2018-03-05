@@ -1,11 +1,14 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 
 public class Bot {
-    private TreeSet<GameState> openList = new TreeSet<>();
-    private Map<String, Boolean> processedBoard = new HashMap<>();
+    private TreeSet<GameState> openList;
+    private Set<String> closedList;
+    
+    public Bot() {
+        openList = new TreeSet<>();
+        closedList = new HashSet<>();
+    }
+    
     /**
      * Take the initial state of a game as input, draw the states space then use Heuristic to make move decisions
      *
@@ -35,7 +38,7 @@ public class Bot {
      * @param gameState the game state
      */
     private void processState(GameState gameState) {
-        processedBoard.putIfAbsent(gameState.toString(), true);
+        closedList.add(gameState.toString());
         ArrayList<Character> validMoves = Config.GAME_RULES.getCellsMovableTo(gameState.getEmptyCellChar());
         for (char moveChar : validMoves) {
             GameState childState = GameState.deepClone(gameState);
@@ -58,7 +61,7 @@ public class Bot {
      * @return true if it is processed before, false otherwise
      */
     private boolean isAlreadyProcessed(GameState gameState) {
-        return processedBoard.getOrDefault(gameState.toString(), false);
+        return closedList.contains(gameState.toString());
     }
     
     public int computeHeuristicValue(GameState gameState) {
