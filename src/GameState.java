@@ -2,24 +2,53 @@ import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public class GameState implements Comparable<GameState>, Serializable {
-    private GameState parentState;
-    private ArrayList<GameState> childStates;
+public class GameState implements Comparable<GameState>, Serializable, Cloneable {
+//    private GameState parentState;
+//    private ArrayList<GameState> childStates;
+//    static final long serialVersionUID = -8084210473720589252L;
     private int actualCostToReach;
     private int heuristicValue;
     private TreeMap<Character, Character> theBoard;
     private ArrayList<Character> stepsTaken;
     private char emptyCellChar;
     private HashMap<Character, Integer> candiesCount;
-    
+
+//    public GameState(GameState gameState){
+////        this.parentState = gameState.parentState;
+////        this.childStates = gameState.childStates;
+//        this.actualCostToReach = gameState.actualCostToReach;
+//        this.heuristicValue = gameState.heuristicValue;
+//        this.theBoard = new TreeMap<>(gameState.theBoard);
+//        this.stepsTaken = new ArrayList<>(gameState.stepsTaken);
+//        this.emptyCellChar = gameState.emptyCellChar;
+//        this.candiesCount = new HashMap<>(gameState.candiesCount);
+//    }
+
+    public GameState clone()
+    {
+        GameState o=null;
+        try
+        {
+            o = (GameState)super.clone();
+        }
+        catch(CloneNotSupportedException e)
+        {
+            System.out.println(e.toString());
+        }
+        o.candiesCount = (HashMap<Character, Integer>)this.candiesCount.clone();
+        o.theBoard = (TreeMap<Character, Character> )this.theBoard.clone();
+        o.stepsTaken = ( ArrayList<Character>)this.stepsTaken.clone();
+        return o;
+    }
+
     /**
      * Initialize a new game from an input string representing the initial state
      *
      * @param inputString the input string
      */
     public GameState(String inputString) {
-        parentState = null;
-        childStates = new ArrayList<>();
+//        parentState = null;
+//        childStates = new ArrayList<>();
         theBoard = new TreeMap<>();
         stepsTaken = new ArrayList<>();
         emptyCellChar = Character.MIN_VALUE;
@@ -122,10 +151,10 @@ public class GameState implements Comparable<GameState>, Serializable {
      */
     public boolean moveCandyAt(char cellChar) {
         // Users type in 'exit' or 'next'
-        if (cellChar == Character.MIN_VALUE || cellChar == Character.MAX_VALUE)
-            return true;
+//        if (cellChar == Character.MIN_VALUE || cellChar == Character.MAX_VALUE)
+//            return true;
         
-        if (Config.GAME_RULES.isValidMove(cellChar, emptyCellChar)) {
+//        if (Config.GAME_RULES.isValidMove(cellChar, emptyCellChar)) {
             theBoard.put(emptyCellChar, theBoard.get(cellChar));
             theBoard.put(cellChar, ' ');
             emptyCellChar = cellChar;
@@ -133,9 +162,9 @@ public class GameState implements Comparable<GameState>, Serializable {
             actualCostToReach++;
 //            printStepsTaken();
             return true;
-        } else {
-            return  false;
-        }
+//        } else {
+//            return  false;
+//        }
     }
     
     /**
@@ -188,9 +217,10 @@ public class GameState implements Comparable<GameState>, Serializable {
      * Check if either the top or the bottom row is valid
      * A valid row is a row does not have more than half candies out of total of any kind
      *
-     * @return 0 if now row is valid, 1 if top row is valid, 2 if bottom row is valid, 3 if both rows are valid
+     * @return 0 if no row is valid, 1 if top row is valid, 2 if bottom row is valid, 3 if both rows are valid
      */
     public int hasValidRow() {
+//        long start = System.currentTimeMillis();
         int result = 0;
         
         Map<Character, Integer> candiesCountTopRow = new HashMap<>();
@@ -216,7 +246,8 @@ public class GameState implements Comparable<GameState>, Serializable {
             result = 1;
         else if (isBottomRowValid)
             result = 2;
-        
+//        long end = System.currentTimeMillis();
+//        System.out.println("hasValidRow: " + (end-start));
         return result;
     }
     
@@ -258,29 +289,29 @@ public class GameState implements Comparable<GameState>, Serializable {
         return stringBuilder.substring(0, stringBuilder.length() - 1);
     }
     
-    public GameState getParentState() {
-        return parentState;
-    }
+//    public GameState getParentState() {
+//        return parentState;
+//    }
     
-    public void setParentState(GameState parentState) {
-        this.parentState = parentState;
-    }
+//    public void setParentState(GameState parentState) {
+//        this.parentState = parentState;
+//    }
     
-    public ArrayList<GameState> getChildStates() {
-        return childStates;
-    }
+//    public ArrayList<GameState> getChildStates() {
+//        return childStates;
+//    }
     
     public TreeMap<Character, Character> getTheBoard() {
         return theBoard;
     }
     
-    public void addNewChild(GameState newChildState) {
-        childStates.add(newChildState);
-    }
+//    public void addNewChild(GameState newChildState) {
+//        childStates.add(newChildState);
+//    }
     
-    public int getChildCount() {
-        return childStates.size();
-    }
+//    public int getChildCount() {
+//        return childStates.size();
+//    }
     
     public ArrayList<Character> getRow(int rowIndex) {
         int i = rowIndex * 5;
@@ -292,9 +323,9 @@ public class GameState implements Comparable<GameState>, Serializable {
         return row;
     }
     
-    private void clearAllChild() {
-        childStates.clear();
-    }
+//    private void clearAllChild() {
+//        childStates.clear();
+//    }
     
     /**
      * Compares this object with the specified object for order.  Returns a
@@ -360,14 +391,17 @@ public class GameState implements Comparable<GameState>, Serializable {
     
     public static GameState deepClone(GameState object) {
         try {
+//            long start = System.currentTimeMillis();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.writeObject(object);
             ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
             ObjectInputStream ois = new ObjectInputStream(bais);
             GameState gameState = (GameState) ois.readObject();
-            gameState.setParentState(null);
-            gameState.clearAllChild();
+//            gameState.setParentState(null);
+//            gameState.clearAllChild();
+//            long end = System.currentTimeMillis();
+//            System.out.println("deepcolne: " + (end-start));
             return gameState;
         }
         catch (Exception e) {
