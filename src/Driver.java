@@ -91,7 +91,11 @@ public class Driver {
             GameState goalState = bot.play(gameState);
 
             if (goalState != null) {
-                goalState.drawGameState();
+                for(Character character: goalState.getStepsTaken()){
+                    gameState.moveCandyAt(character);
+                    gameState.drawGameState();
+                }
+//                goalState.drawGameState();
                 goalState.printStepsTaken();
                 numberOfMove += goalState.getStepsTaken().size();
                 
