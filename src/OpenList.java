@@ -9,6 +9,7 @@ public class OpenList {
         mapping = new HashMap<>();
         orderedSet = new TreeSet<>();
     }
+
     
     /**
      * Add a new game state to the data structure

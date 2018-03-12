@@ -89,7 +89,7 @@ public class Driver {
             GameState gameState = new GameState(inputString);
             Bot bot = new Bot();
             GameState goalState = bot.play(gameState);
-            
+
             if (goalState != null) {
                 goalState.drawGameState();
                 goalState.printStepsTaken();

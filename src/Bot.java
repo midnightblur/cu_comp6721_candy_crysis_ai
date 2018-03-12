@@ -39,16 +39,25 @@ public class Bot {
     private void processState(GameState gameState) {
         closedList.add(gameState.toString());
         ArrayList<Character> validMovesList = Config.GAME_RULES.getCellsMovableTo(gameState.getEmptyCellChar());
+
         for (char move : validMovesList) {
-            GameState childState = GameState.deepClone(gameState);
+//            GameState childState = GameState.deepClone(gameState);
+//            GameState childState = new GameState(gameState);
+            GameState childState = gameState.clone();
+//            childState.drawGameState();
             if (childState != null) {
                 childState.moveCandyAt(move);
-                childState.setParentState(gameState);
+//                childState.setParentState(gameState);
                 computeHeuristicValue(childState);
-                gameState.addNewChild(childState);
+//                gameState.addNewChild(childState);
                 openList.addNewItem(childState);
             }
+            else{
+                System.out.println("ChildState is null");
+            }
+
         }
+//        System.out.print(openList.getSize());
     }
     
     /**
@@ -78,23 +87,63 @@ public class Bot {
      */
     private int heuristic1(GameState gameState) {
         int heuristicValue = 0;
-        int hasValidRow = gameState.hasValidRow();
-        switch (hasValidRow) {
-            case 0:
-                heuristicValue += 10;
-                break;
-            case 1:
-            case 2:
-            case 3: {
-                ArrayList<Character> row0 = gameState.getRow(0);
-                ArrayList<Character> row2 = gameState.getRow(2);
-                for (int i = 0; i < row0.size(); i++) {
-                    if (row0.get(i) != row2.get(i))
-                        heuristicValue++;
+//        int hasValidRow = gameState.hasValidRow();
+//        switch (hasValidRow) {
+//            case 0:
+//                heuristicValue += 10;
+////                break;
+//            case 1:
+//            case 2:
+//            case 3: {
+//                ArrayList<Character> row0 = gameState.getRow(0);
+//                ArrayList<Character> row2 = gameState.getRow(2);
+//                for (int i = 0; i < row0.size(); i++) {
+//                    if (row0.get(i) != row2.get(i))
+//                        heuristicValue++;
+//                }
+//                break;
+//            }
+//        }
+
+        // compare the Character in first row and third row one by one, if one of them is empty, search its neighbour,
+        // if its neighbour can match the opposite row, then plus 1. else plus 2. If none of them are empty, plus 2 as well
+        ArrayList<Character> row0 = gameState.getRow(0);
+        ArrayList<Character> row1 = gameState.getRow(1);
+        ArrayList<Character> row2 = gameState.getRow(2);
+        for (int i = 0; i < row0.size(); i++) {
+            if (row0.get(i) != row2.get(i)){
+                if(row0.get(i) == ' '){
+                    heuristicValue += getHeuristic(row0,row1,row2,i);
                 }
-                break;
+                else if(row2.get(i) == ' '){
+                    heuristicValue += getHeuristic(row2,row1,row0,i);
+                }
+                else{
+                    heuristicValue += 2;
+                }
+
             }
         }
         return heuristicValue;
+    }
+
+    /**
+     * @param row0
+     * @param row1
+     * @param row2
+     * @param i
+     * @return
+     */
+    private int getHeuristic(ArrayList<Character> row0, ArrayList<Character> row1,ArrayList<Character> row2,int i){
+        int heuristic = 0;
+        if(i-1>=0 && row0.get(i-1) == row2.get(i))
+            heuristic ++;
+        else if(i+1<=4 && row0.get(i+1) == row2.get(i))
+            heuristic ++;
+        else if(row1.get(i) == row2.get(i))
+            heuristic ++;
+        else
+            heuristic += 2;
+        return heuristic;
     }
 }
