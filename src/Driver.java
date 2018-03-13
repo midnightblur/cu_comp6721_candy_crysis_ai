@@ -59,7 +59,8 @@ public class Driver {
                     writeFile(null, 0);
                     break;
                 }
-                
+    
+                gameState.printStepsTaken();
                 if (gameState.isGoalState()) {
                     System.out.println();
                     System.out.println("You win!!!!");
