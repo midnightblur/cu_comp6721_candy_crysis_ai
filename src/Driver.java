@@ -59,7 +59,8 @@ public class Driver {
                     writeFile(null, 0);
                     break;
                 }
-                
+    
+                gameState.printStepsTaken();
                 if (gameState.isGoalState()) {
                     System.out.println();
                     System.out.println("You win!!!!");
@@ -87,16 +88,21 @@ public class Driver {
             noGamesPlayed++;
             long startTime = System.currentTimeMillis();
             GameState gameState = new GameState(inputString);
+            System.out.println("=======================");
+            System.out.println("======NEW  PUZZLE======");
+            System.out.println("=======================");
+            gameState.drawGameState();
             Bot bot = new Bot();
             GameState goalState = bot.play(gameState);
 
             if (goalState != null) {
                 for(Character character: goalState.getStepsTaken()){
                     gameState.moveCandyAt(character);
+                    gameState.printStepsTaken();
                     gameState.drawGameState();
                 }
 //                goalState.drawGameState();
-                goalState.printStepsTaken();
+//                goalState.printStepsTaken();
                 numberOfMove += goalState.getStepsTaken().size();
                 
                 // Only write the result to files if the puzzle is solved

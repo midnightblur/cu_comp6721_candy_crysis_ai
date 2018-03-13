@@ -151,10 +151,10 @@ public class GameState implements Comparable<GameState>, Serializable, Cloneable
      */
     public boolean moveCandyAt(char cellChar) {
         // Users type in 'exit' or 'next'
-//        if (cellChar == Character.MIN_VALUE || cellChar == Character.MAX_VALUE)
-//            return true;
+        if (cellChar == Character.MIN_VALUE || cellChar == Character.MAX_VALUE)
+            return true;
         
-//        if (Config.GAME_RULES.isValidMove(cellChar, emptyCellChar)) {
+        if (Config.GAME_RULES.isValidMove(cellChar, emptyCellChar)) {
             theBoard.put(emptyCellChar, theBoard.get(cellChar));
             theBoard.put(cellChar, ' ');
             emptyCellChar = cellChar;
@@ -162,9 +162,9 @@ public class GameState implements Comparable<GameState>, Serializable, Cloneable
             actualCostToReach++;
 //            printStepsTaken();
             return true;
-//        } else {
-//            return  false;
-//        }
+        } else {
+            return  false;
+        }
     }
     
     /**
